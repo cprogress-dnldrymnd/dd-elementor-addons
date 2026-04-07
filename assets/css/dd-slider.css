@@ -17,6 +17,11 @@
     width: 100%;
     height: 100%;
 }
+.dd-swiper-slide:not(.swiper-slide-active) {
+    opacity: 0 !important;
+    z-index: 0;
+}
+
 
 /* =========================================
    BACKGROUND VIDEO DOM MAPPING
