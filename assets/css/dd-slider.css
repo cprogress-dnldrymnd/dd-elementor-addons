@@ -71,3 +71,33 @@
     background: #f1f1f1;
     border: 2px dashed #ccc;
 }
+
+.dd-slide-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.dd-btn {
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.dd-btn-solid {
+    background-color: #E3C18C; /* Match image example color */
+    color: #000;
+    border: 2px solid #E3C18C;
+}
+
+.dd-btn-outline {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.dd-btn:hover {
+    opacity: 0.8;
+}
