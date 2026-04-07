@@ -68,6 +68,7 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 
 	/**
 	 * Registers the widget controls via a tabbed interface.
+	 * Includes grouped tabs within the repeater for logical separation of Content and Background.
 	 *
 	 * @return void
 	 */
@@ -85,6 +86,18 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		);
 
 		$repeater = new \Elementor\Repeater();
+
+		$repeater->start_controls_tabs( 'slide_configuration_tabs' );
+
+		// ------------------------------
+		// REPEATER SUB-TAB: CONTENT
+		// ------------------------------
+		$repeater->start_controls_tab(
+			'tab_slide_content',
+			[
+				'label' => esc_html__( 'Content', 'dd-addons' ),
+			]
+		);
 
 		$repeater->add_control(
 			'nav_label',
@@ -193,6 +206,34 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 			]
 		);
 
+		$repeater->end_controls_tab();
+
+		// ------------------------------
+		// REPEATER SUB-TAB: BACKGROUND
+		// ------------------------------
+		$repeater->start_controls_tab(
+			'tab_slide_background',
+			[
+				'label' => esc_html__( 'Background', 'dd-addons' ),
+			]
+		);
+
+		// Utilize Elementor's native Group Control to inject full Background UI (Color, Gradient, Image, Video)
+		$repeater->add_group_control(
+			\Elementor\Group_Control_Background::get_type(),
+			[
+				'name'     => 'slide_bg',
+				'label'    => esc_html__( 'Slide Background', 'dd-addons' ),
+				'types'    => [ 'classic', 'gradient', 'video' ],
+				// {{CURRENT_ITEM}} maps to the dynamically generated class on the repeater iteration wrapper
+				'selector' => '{{WRAPPER}} {{CURRENT_ITEM}}', 
+			]
+		);
+
+		$repeater->end_controls_tab();
+
+		$repeater->end_controls_tabs();
+
 		$this->add_control(
 			'slides',
 			[
@@ -276,8 +317,10 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 					<?php
 					// Loop through repeater items
 					foreach ( $settings['slides'] as $index => $slide ) :
+						// Map Elementor's generated repeater ID as a class for targeted CSS injection
+						$repeater_class = 'elementor-repeater-item-' . esc_attr( $slide['_id'] );
 						?>
-						<div class="swiper-slide dd-swiper-slide">
+						<div class="swiper-slide dd-swiper-slide <?php echo $repeater_class; ?>">
 							<?php
 							if ( 'template' === $slide['source_type'] ) {
 								// Render the selected Elementor template
