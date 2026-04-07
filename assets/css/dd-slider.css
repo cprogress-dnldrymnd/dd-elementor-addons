@@ -6,11 +6,51 @@
 
 .dd-swiper-container {
     width: 100%;
-    height: 100%;
-    min-height: 500px; /* Essential to prevent collapse when leveraging native custom content */
+    /* Min-height now dynamically controlled by Elementor Global Settings */
 }
 
-/* Bottom Navigation Wrapper */
+.dd-swiper-slide {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+}
+
+/* =========================================
+   BACKGROUND VIDEO DOM MAPPING
+   ========================================= */
+.dd-bg-video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.dd-bg-video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 16:9 Aspect Ratio enforcement for iframes to prevent black bars */
+.dd-bg-video-wrapper iframe {
+    width: 100vw;
+    height: 56.25vw;
+    min-height: 100vh;
+    min-width: 177.77vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* =========================================
+   BOTTOM NAVIGATION WRAPPER
+   ========================================= */
 .dd-slider-navigation {
     position: absolute;
     bottom: 0;
@@ -23,7 +63,6 @@
     z-index: 10;
 }
 
-/* Individual Navigation Item */
 .dd-nav-item {
     position: relative;
     flex: 1;
@@ -44,19 +83,17 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Progress Fill Bar */
 .dd-nav-progress-fill {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 0%;
-    background: rgba(255, 255, 255, 0.3); /* Subtle white overlay for the progress */
+    background: rgba(255, 255, 255, 0.3);
     z-index: 1;
     pointer-events: none;
 }
 
-/* Text Label */
 .dd-nav-label {
     position: relative;
     z-index: 2;
@@ -66,24 +103,18 @@
     pointer-events: none;
 }
 
-.dd-placeholder {
-    padding: 100px;
-    text-align: center;
-    background: #f1f1f1;
-    border: 2px dashed #ccc;
-}
-
-/* Custom Content Scaffolding */
+/* =========================================
+   CUSTOM CONTENT SCAFFOLDING
+   ========================================= */
 .dd-custom-slide-content {
+    position: relative;
+    z-index: 1; /* Elevates above background layers */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    height: 100%;
-    min-height: 500px;
+    width: 100%;
     padding: 40px 10%;
-    text-align: center;
-    background: #1e1e1e;
+    background: transparent; /* Stripped to allow Elementor BG settings passthrough */
     color: #ffffff;
 }
 
@@ -106,9 +137,34 @@
     display: flex;
     gap: 15px;
     align-items: center;
+}
+
+/* --- Alignment Matrices --- */
+.dd-align-left {
+    text-align: left;
+    align-items: flex-start;
+}
+.dd-align-left .dd-slide-actions {
+    justify-content: flex-start;
+}
+
+.dd-align-center {
+    text-align: center;
+    align-items: center;
+}
+.dd-align-center .dd-slide-actions {
     justify-content: center;
 }
 
+.dd-align-right {
+    text-align: right;
+    align-items: flex-end;
+}
+.dd-align-right .dd-slide-actions {
+    justify-content: flex-end;
+}
+
+/* --- Buttons --- */
 .dd-btn {
     padding: 14px 28px;
     border-radius: 4px;
@@ -140,4 +196,12 @@
 .dd-btn-outline:hover {
     background-color: #ffffff;
     color: #000000;
+}
+
+.dd-placeholder {
+    padding: 100px;
+    text-align: center;
+    background: #f1f1f1;
+    border: 2px dashed #ccc;
+    width: 100%;
 }
