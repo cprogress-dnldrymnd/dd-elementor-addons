@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class DD_Progress_Slider_Widget
- * Elementor widget that outputs a Swiper carousel consisting of Elementor Templates with progress-bar navigation.
+ * Elementor widget that outputs a Swiper carousel consisting of Elementor Templates or Custom Content with progress-bar navigation.
  */
 class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 
@@ -98,12 +98,98 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		);
 
 		$repeater->add_control(
+			'source_type',
+			[
+				'label'   => esc_html__( 'Carousel Source', 'dd-addons' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'default' => 'template',
+				'options' => [
+					'template' => esc_html__( 'Elementor Template', 'dd-addons' ),
+					'custom'   => esc_html__( 'Custom Content', 'dd-addons' ),
+				],
+			]
+		);
+
+		$repeater->add_control(
 			'template_id',
 			[
 				'label'       => esc_html__( 'Select Elementor Template', 'dd-addons' ),
 				'type'        => \Elementor\Controls_Manager::SELECT,
 				'options'     => $this->get_elementor_templates(),
 				'label_block' => true,
+				'condition'   => [
+					'source_type' => 'template',
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'custom_heading',
+			[
+				'label'       => esc_html__( 'Heading', 'dd-addons' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'default'     => esc_html__( 'Custom Slide Heading', 'dd-addons' ),
+				'label_block' => true,
+				'condition'   => [
+					'source_type' => 'custom',
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'custom_description',
+			[
+				'label'       => esc_html__( 'Description', 'dd-addons' ),
+				'type'        => \Elementor\Controls_Manager::TEXTAREA,
+				'default'     => esc_html__( 'Provide a brief description for this slide.', 'dd-addons' ),
+				'condition'   => [
+					'source_type' => 'custom',
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'button_1_text',
+			[
+				'label'       => esc_html__( 'Button 1 Text (Solid)', 'dd-addons' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'default'     => esc_html__( 'Learn More', 'dd-addons' ),
+				'condition'   => [
+					'source_type' => 'custom',
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'button_1_link',
+			[
+				'label'       => esc_html__( 'Button 1 Link', 'dd-addons' ),
+				'type'        => \Elementor\Controls_Manager::URL,
+				'condition'   => [
+					'source_type' => 'custom',
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'button_2_text',
+			[
+				'label'       => esc_html__( 'Button 2 Text (Outline)', 'dd-addons' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'condition'   => [
+					'source_type' => 'custom',
+				],
+			]
+		);
+
+		$repeater->add_control(
+			'button_2_link',
+			[
+				'label'       => esc_html__( 'Button 2 Link', 'dd-addons' ),
+				'type'        => \Elementor\Controls_Manager::URL,
+				'condition'   => [
+					'source_type' => 'custom',
+				],
 			]
 		);
 
@@ -114,8 +200,14 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 				'type'        => \Elementor\Controls_Manager::REPEATER,
 				'fields'      => $repeater->get_controls(),
 				'default'     => [
-					[ 'nav_label' => esc_html__( 'Bespoke', 'dd-addons' ) ],
-					[ 'nav_label' => esc_html__( 'Display Models', 'dd-addons' ) ],
+					[ 
+						'nav_label'   => esc_html__( 'Bespoke', 'dd-addons' ),
+						'source_type' => 'template' 
+					],
+					[ 
+						'nav_label'   => esc_html__( 'Display Models', 'dd-addons' ),
+						'source_type' => 'custom' 
+					],
 				],
 				'title_field' => '{{{ nav_label }}}',
 			]
@@ -124,7 +216,7 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		$this->end_controls_section();
 
 		// ==============================
-		// TAB: SETTINGS (Content)
+		// TAB: SETTINGS
 		// ==============================
 		$this->start_controls_section(
 			'section_settings',
@@ -187,11 +279,42 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 						?>
 						<div class="swiper-slide dd-swiper-slide">
 							<?php
-							// Render the selected Elementor template
-							if ( ! empty( $slide['template_id'] ) ) {
-								echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $slide['template_id'] );
+							if ( 'template' === $slide['source_type'] ) {
+								// Render the selected Elementor template
+								if ( ! empty( $slide['template_id'] ) ) {
+									echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $slide['template_id'] );
+								} else {
+									echo '<div class="dd-placeholder">' . esc_html__( 'Please select a template.', 'dd-addons' ) . '</div>';
+								}
 							} else {
-								echo '<div class="dd-placeholder">' . esc_html__( 'Please select a template.', 'dd-addons' ) . '</div>';
+								// Render Custom Content fallback markup
+								?>
+								<div class="dd-custom-slide-content">
+									<?php if ( ! empty( $slide['custom_heading'] ) ) : ?>
+										<h2 class="dd-slide-heading"><?php echo esc_html( $slide['custom_heading'] ); ?></h2>
+									<?php endif; ?>
+									
+									<?php if ( ! empty( $slide['custom_description'] ) ) : ?>
+										<div class="dd-slide-description">
+											<?php echo wp_kses_post( nl2br( $slide['custom_description'] ) ); ?>
+										</div>
+									<?php endif; ?>
+
+									<div class="dd-slide-actions">
+										<?php if ( ! empty( $slide['button_1_text'] ) ) : ?>
+											<a href="<?php echo esc_url( $slide['button_1_link']['url'] ?? '#' ); ?>" class="dd-btn dd-btn-solid">
+												<?php echo esc_html( $slide['button_1_text'] ); ?>
+											</a>
+										<?php endif; ?>
+										
+										<?php if ( ! empty( $slide['button_2_text'] ) ) : ?>
+											<a href="<?php echo esc_url( $slide['button_2_link']['url'] ?? '#' ); ?>" class="dd-btn dd-btn-outline">
+												<?php echo esc_html( $slide['button_2_text'] ); ?>
+											</a>
+										<?php endif; ?>
+									</div>
+								</div>
+								<?php
 							}
 							?>
 						</div>

@@ -6,7 +6,7 @@ class DDProgressSlider {
     
     /**
      * Constructor.
-     * * @param {HTMLElement} wrapper The main widget container.
+     * @param {HTMLElement} wrapper The main widget container.
      */
     constructor(wrapper) {
         this.wrapper = wrapper;
@@ -25,15 +25,16 @@ class DDProgressSlider {
 
     /**
      * Initializes the Swiper instance.
-     * Hardcodes slidesPerView to 1 as per requirements.
+     * Integrates loop capability and safely mitigates async dependencies for Elementor 3.x+.
      */
     initSwiper() {
         const SwiperClass = typeof Swiper !== 'undefined' ? Swiper : elementorFrontend.utils.swiper;
 
-        this.swiper = new SwiperClass(this.container, {
+        const swiperConfig = {
             slidesPerView: 1, // Fixed to 1 slide per view
             speed: this.options.speed,
-            effect: 'fade', // Optional: 'slide' or 'fade' usually looks best for hero sections
+            effect: 'fade', 
+            loop: true, // Crucial parameter to allow continuous progress bars and slideToLoop functionality
             autoplay: {
                 delay: this.options.autoplay_delay,
                 disableOnInteraction: false,
@@ -43,12 +44,21 @@ class DDProgressSlider {
                 autoplayTimeLeft: (s, time, progress) => this.handleProgress(s, progress),
                 slideChange: (s) => this.handleSlideChange(s)
             }
-        });
+        };
+
+        // Instantiation utilizing promise evaluation for robust compatibility 
+        if ( typeof Swiper === 'undefined' && typeof elementorFrontend.utils.swiper !== 'undefined' ) {
+            new SwiperClass(this.container, swiperConfig).then( ( instance ) => {
+                this.swiper = instance;
+            });
+        } else {
+            this.swiper = new SwiperClass(this.container, swiperConfig);
+        }
     }
 
     /**
      * Updates the progress bar width for the active navigation item.
-     * * @param {Object} swiperInstance Current Swiper instance.
+     * @param {Object} swiperInstance Current Swiper instance.
      * @param {number} progress Float representing remaining time (1 to 0).
      */
     handleProgress(swiperInstance, progress) {
@@ -70,13 +80,14 @@ class DDProgressSlider {
 
     /**
      * Resets visual states when a slide change occurs manually or automatically.
-     * * @param {Object} swiperInstance Current Swiper instance.
+     * @param {Object} swiperInstance Current Swiper instance.
      */
     handleSlideChange(swiperInstance) {
         const activeIndex = swiperInstance.realIndex;
         this.navItems.forEach((item, index) => {
             if (index !== activeIndex) {
-                item.querySelector('.dd-nav-progress-fill').style.width = '0%';
+                const fill = item.querySelector('.dd-nav-progress-fill');
+                if (fill) fill.style.width = '0%';
                 item.classList.remove('is-active');
             }
         });
