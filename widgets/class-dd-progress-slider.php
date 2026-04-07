@@ -497,21 +497,20 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 			]
 		);
 
-		$this->start_controls_tabs( 'tabs_buttons_style' );
-
-		// ------------------------------
-		// BUTTON SUB-TAB: SOLID
-		// ------------------------------
-		$this->start_controls_tab(
-			'tab_button_solid',
+		// --- SOLID BUTTON HEADING ---
+		$this->add_control(
+			'heading_solid_button',
 			[
-				'label' => esc_html__( 'Solid Button', 'dd-addons' ),
+				'label'     => esc_html__( 'Solid Button', 'dd-addons' ),
+				'type'      => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
 			]
 		);
 
-		$this->start_controls_tabs( 'tabs_button_solid_states' );
+		// Standard Normal/Hover initialization for Solid Button
+		$this->start_controls_tabs( 'tabs_solid_button_states' );
 
-		// Normal State
+		// Solid - Normal
 		$this->start_controls_tab( 'tab_solid_normal', [ 'label' => esc_html__( 'Normal', 'dd-addons' ) ] );
 		$this->add_control(
 			'solid_text_color',
@@ -539,7 +538,7 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		);
 		$this->end_controls_tab();
 
-		// Hover State
+		// Solid - Hover
 		$this->start_controls_tab( 'tab_solid_hover', [ 'label' => esc_html__( 'Hover', 'dd-addons' ) ] );
 		$this->add_control(
 			'solid_hover_text_color',
@@ -568,21 +567,21 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
-		$this->end_controls_tab();
 
-		// ------------------------------
-		// BUTTON SUB-TAB: OUTLINE
-		// ------------------------------
-		$this->start_controls_tab(
-			'tab_button_outline',
+		// --- OUTLINE BUTTON HEADING ---
+		$this->add_control(
+			'heading_outline_button',
 			[
-				'label' => esc_html__( 'Outline Button', 'dd-addons' ),
+				'label'     => esc_html__( 'Outline Button', 'dd-addons' ),
+				'type'      => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
 			]
 		);
 
-		$this->start_controls_tabs( 'tabs_button_outline_states' );
+		// Standard Normal/Hover initialization for Outline Button
+		$this->start_controls_tabs( 'tabs_outline_button_states' );
 
-		// Normal State
+		// Outline - Normal
 		$this->start_controls_tab( 'tab_outline_normal', [ 'label' => esc_html__( 'Normal', 'dd-addons' ) ] );
 		$this->add_control(
 			'outline_text_color',
@@ -610,7 +609,7 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		);
 		$this->end_controls_tab();
 
-		// Hover State
+		// Outline - Hover
 		$this->start_controls_tab( 'tab_outline_hover', [ 'label' => esc_html__( 'Hover', 'dd-addons' ) ] );
 		$this->add_control(
 			'outline_hover_text_color',
@@ -636,9 +635,6 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 				'selectors' => [ '{{WRAPPER}} .dd-btn-outline:hover' => 'border-color: {{VALUE}};' ],
 			]
 		);
-		$this->end_controls_tab();
-
-		$this->end_controls_tabs();
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
