@@ -68,6 +68,7 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 
 	/**
 	 * Registers the widget controls via a tabbed interface.
+	 * Includes grouped tabs for Content, Background, and Background Overlay.
 	 *
 	 * @return void
 	 */
@@ -254,6 +255,49 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 
 		$repeater->end_controls_tab();
 
+		// ------------------------------
+		// REPEATER SUB-TAB: OVERLAY
+		// ------------------------------
+		$repeater->start_controls_tab(
+			'tab_slide_overlay',
+			[
+				'label' => esc_html__( 'Overlay', 'dd-addons' ),
+			]
+		);
+
+		$repeater->add_group_control(
+			\Elementor\Group_Control_Background::get_type(),
+			[
+				'name'     => 'slide_bg_overlay',
+				'label'    => esc_html__( 'Background Overlay', 'dd-addons' ),
+				'types'    => [ 'classic', 'gradient' ],
+				'selector' => '{{WRAPPER}} {{CURRENT_ITEM}} .dd-slide-overlay', 
+			]
+		);
+
+		$repeater->add_control(
+			'slide_bg_overlay_opacity',
+			[
+				'label'   => esc_html__( 'Opacity', 'dd-addons' ),
+				'type'    => \Elementor\Controls_Manager::SLIDER,
+				'default' => [
+					'size' => 0.5,
+				],
+				'range' => [
+					'px' => [
+						'max'  => 1,
+						'min'  => 0,
+						'step' => 0.01,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} {{CURRENT_ITEM}} .dd-slide-overlay' => 'opacity: {{SIZE}};',
+				],
+			]
+		);
+
+		$repeater->end_controls_tab();
+
 		$repeater->end_controls_tabs();
 
 		$this->add_control(
@@ -320,6 +364,124 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 		);
 
 		$this->end_controls_section();
+	}
+
+	/**
+	 * Renders the widget output on the frontend.
+	 *
+	 * @return void
+	 */
+	protected function render() {
+		$settings = $this->get_settings_for_display();
+
+		if ( empty( $settings['slides'] ) ) {
+			return;
+		}
+
+		$swiper_options = [
+			'autoplay_delay' => absint( $settings['autoplay_delay'] ),
+			'speed'          => absint( $settings['transition_speed'] ),
+		];
+
+		$this->add_render_attribute( 'wrapper', [
+			'class'           => 'dd-progress-slider-wrapper',
+			'data-dd-options' => wp_json_encode( $swiper_options ),
+		] );
+		?>
+		<div <?php $this->print_render_attribute_string( 'wrapper' ); ?>>
+			<div class="swiper dd-swiper-container">
+				<div class="swiper-wrapper">
+					<?php
+					foreach ( $settings['slides'] as $index => $slide ) :
+						$repeater_class = 'elementor-repeater-item-' . esc_attr( $slide['_id'] );
+						$align_class    = ! empty( $slide['text_align'] ) ? 'dd-align-' . esc_attr( $slide['text_align'] ) : 'dd-align-center';
+						
+						// Intercept and generate raw HTML payload for video backgrounds
+						$bg_type    = $slide['slide_bg_background'] ?? '';
+						$video_html = '';
+						if ( 'video' === $bg_type && ! empty( $slide['slide_bg_video_link'] ) ) {
+							$video_url = $slide['slide_bg_video_link'];
+							$video_html .= '<div class="dd-bg-video-wrapper">';
+							
+							if ( strpos( $video_url, 'youtube.com' ) !== false || strpos( $video_url, 'youtu.be' ) !== false ) {
+								preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $video_url, $match);
+								$yt_id = $match[1] ?? '';
+								if ( $yt_id ) {
+									$video_html .= '<iframe src="https://www.youtube.com/embed/' . esc_attr( $yt_id ) . '?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&playsinline=1&playlist=' . esc_attr( $yt_id ) . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+								}
+							} elseif ( strpos( $video_url, 'vimeo.com' ) !== false ) {
+								preg_match('/vimeo\.com\/([0-9]+)/i', $video_url, $match);
+								$vimeo_id = $match[1] ?? '';
+								if ( $vimeo_id ) {
+									$video_html .= '<iframe src="https://player.vimeo.com/video/' . esc_attr( $vimeo_id ) . '?autoplay=1&loop=1&muted=1&background=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+								}
+							} else {
+								$video_html .= '<video src="' . esc_url( $video_url ) . '" autoplay muted loop playsinline></video>';
+							}
+							$video_html .= '</div>';
+						}
+						?>
+						<div class="swiper-slide dd-swiper-slide <?php echo $repeater_class; ?>">
+							
+							<?php echo $video_html; // Injects behind content plane ?>
+							
+							<div class="dd-slide-overlay"></div>
+
+							<div class="dd-slide-inner-content">
+								<?php
+								if ( 'template' === $slide['source_type'] ) {
+									if ( ! empty( $slide['template_id'] ) ) {
+										echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $slide['template_id'] );
+									} else {
+										echo '<div class="dd-placeholder">' . esc_html__( 'Please select a template.', 'dd-addons' ) . '</div>';
+									}
+								} else {
+									?>
+									<div class="dd-custom-slide-content <?php echo esc_attr( $align_class ); ?>">
+										<?php if ( ! empty( $slide['custom_heading'] ) ) : ?>
+											<h2 class="dd-slide-heading"><?php echo esc_html( $slide['custom_heading'] ); ?></h2>
+										<?php endif; ?>
+										
+										<?php if ( ! empty( $slide['custom_description'] ) ) : ?>
+											<div class="dd-slide-description">
+												<?php echo wp_kses_post( nl2br( $slide['custom_description'] ) ); ?>
+											</div>
+										<?php endif; ?>
+
+										<div class="dd-slide-actions">
+											<?php if ( ! empty( $slide['button_1_text'] ) ) : ?>
+												<a href="<?php echo esc_url( $slide['button_1_link']['url'] ?? '#' ); ?>" class="dd-btn dd-btn-solid">
+													<?php echo esc_html( $slide['button_1_text'] ); ?>
+												</a>
+											<?php endif; ?>
+											
+											<?php if ( ! empty( $slide['button_2_text'] ) ) : ?>
+												<a href="<?php echo esc_url( $slide['button_2_link']['url'] ?? '#' ); ?>" class="dd-btn dd-btn-outline">
+													<?php echo esc_html( $slide['button_2_text'] ); ?>
+												</a>
+											<?php endif; ?>
+										</div>
+									</div>
+									<?php
+								}
+								?>
+							</div>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			</div>
+
+			<div class="dd-slider-navigation">
+				<?php foreach ( $settings['slides'] as $index => $slide ) : ?>
+					<div class="dd-nav-item" data-index="<?php echo esc_attr( $index ); ?>">
+						<div class="dd-nav-progress-bg"></div>
+						<div class="dd-nav-progress-fill"></div>
+						<span class="dd-nav-label"><?php echo esc_html( $slide['nav_label'] ); ?></span>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**

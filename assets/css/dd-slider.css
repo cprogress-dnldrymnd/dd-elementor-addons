@@ -205,3 +205,42 @@
     border: 2px dashed #ccc;
     width: 100%;
 }
+
+/* =========================================
+   BACKGROUND OVERLAY DOM MAPPING
+   ========================================= */
+.dd-slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Sits above video/background (z-index: 0) */
+    pointer-events: none;
+    transition: background 0.3s ease;
+}
+
+/* =========================================
+   INNER CONTENT STACKING
+   ========================================= */
+.dd-slide-inner-content {
+    position: relative;
+    z-index: 2; /* Elevates Custom Content & Templates above the overlay */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Remove 'position' and 'z-index' properties from .dd-custom-slide-content if you added them previously, 
+   as .dd-slide-inner-content now handles the elevation. */
+.dd-custom-slide-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 40px 10%;
+    background: transparent;
+    color: #ffffff;
+}
