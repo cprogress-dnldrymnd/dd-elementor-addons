@@ -9,10 +9,13 @@
     /* Min-height now dynamically controlled by Elementor Global Settings */
 }
 
+/* Ensure slides conform to the container boundaries and Swiper handles visibility natively */
 .dd-swiper-slide {
     position: relative;
     display: flex;
     overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 /* =========================================

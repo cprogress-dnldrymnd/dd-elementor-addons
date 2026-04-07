@@ -3,7 +3,7 @@
  * Handles the instantiation of Swiper and synchronization with the custom progress-bar navigation.
  */
 class DDProgressSlider {
-    
+
     /**
      * Constructor.
      * @param {HTMLElement} wrapper The main widget container.
@@ -12,28 +12,33 @@ class DDProgressSlider {
         this.wrapper = wrapper;
         this.container = this.wrapper.querySelector('.dd-swiper-container');
         this.navItems = this.wrapper.querySelectorAll('.dd-nav-item');
-        
+
         if (!this.container || this.navItems.length === 0) return;
 
         // Parse options passed from PHP
         const rawOptions = this.wrapper.getAttribute('data-dd-options');
         this.options = rawOptions ? JSON.parse(rawOptions) : { autoplay_delay: 5000, speed: 500 };
-        
+
         this.initSwiper();
         this.bindEvents();
     }
 
     /**
-     * Initializes the Swiper instance.
-     */
+      * Initializes the Swiper instance.
+      * Integrates loop capability, safely mitigates async dependencies for Elementor 3.x+,
+      * and enables crossFade to prevent visual overlapping on transparent slides.
+      */
     initSwiper() {
         const SwiperClass = typeof Swiper !== 'undefined' ? Swiper : elementorFrontend.utils.swiper;
 
         const swiperConfig = {
-            slidesPerView: 1, 
+            slidesPerView: 1,
             speed: this.options.speed,
-            effect: 'fade', 
-            loop: true, 
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true // <-- Crucial: Forces the outgoing slide to fade to opacity 0
+            },
+            loop: true,
             autoplay: {
                 delay: this.options.autoplay_delay,
                 disableOnInteraction: false,
@@ -45,8 +50,8 @@ class DDProgressSlider {
         };
 
         // Handle Elementor 3.x+ async Swiper loading
-        if ( typeof Swiper === 'undefined' && typeof elementorFrontend.utils.swiper !== 'undefined' ) {
-            new SwiperClass(this.container, swiperConfig).then( ( instance ) => {
+        if (typeof Swiper === 'undefined' && typeof elementorFrontend.utils.swiper !== 'undefined') {
+            new SwiperClass(this.container, swiperConfig).then((instance) => {
                 this.swiper = instance;
                 // Initialize the first progress bar immediately
                 this.animateProgress(this.swiper.realIndex);
@@ -106,7 +111,7 @@ class DDProgressSlider {
 
 // Initialize on Elementor frontend loaded hook
 window.addEventListener('elementor/frontend/init', () => {
-    elementorFrontend.hooks.addAction('frontend/element_ready/dd_progress_slider.default', function($scope) {
+    elementorFrontend.hooks.addAction('frontend/element_ready/dd_progress_slider.default', function ($scope) {
         new DDProgressSlider($scope[0]);
     });
 });
