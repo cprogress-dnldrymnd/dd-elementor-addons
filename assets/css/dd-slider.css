@@ -254,11 +254,12 @@
 
 @media (max-width: 1024px) {
     .dd-custom-slide-content {
-        padding: 50px 20px 140px;
+        padding: 50px 20px 100px;
     }
     .dd-slider-navigation {
         left: 20px;
         right: 20px;
+        bottom: 20px;
     }
     .dd-nav-item {
         padding: 10px 15px;
