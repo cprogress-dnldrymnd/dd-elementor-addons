@@ -10,17 +10,19 @@
 }
 
 /* Ensure slides conform to the container boundaries and Swiper handles visibility natively */
-.dd-swiper-slide {
+.dd-swiper-slide.dd-swiper-slide {
     position: relative;
     display: flex;
     overflow: hidden;
     width: 100%;
-    height: 100%;
+    height: auto;
 }
 .dd-swiper-slide:not(.swiper-slide-active) {
     opacity: 0 !important;
     z-index: 0;
 }
+
+
 
 /* =========================================
    BACKGROUND VIDEO DOM MAPPING
