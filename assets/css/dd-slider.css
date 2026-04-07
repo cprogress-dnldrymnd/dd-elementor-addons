@@ -121,7 +121,7 @@
     flex-direction: column;
     justify-content: center;
     width: 100%;
-    padding: 100px 40px;
+    padding: 100px 40px 140px;
     background: transparent; /* Stripped to allow Elementor BG settings passthrough */
     color: #ffffff;
 }
