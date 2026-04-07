@@ -97,12 +97,9 @@
     left: 0;
     height: 100%;
     width: 0%;
-    background: rgba(255, 255, 255);
+    background: rgba(255, 255, 255, 0.3);
     z-index: 1;
     pointer-events: none;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    mix-blend-mode: lighten;
 }
 
 .dd-nav-label {
