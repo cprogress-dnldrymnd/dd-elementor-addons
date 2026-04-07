@@ -38,15 +38,22 @@ class DD_Widget_Manager {
 		add_action( 'elementor/frontend/after_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 	}
 
-	/**
-	 * Registers custom Elementor widgets.
+/**
+	 * Registers custom Elementor widgets based on admin settings.
 	 * * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager instance.
 	 * @return void
 	 */
 	public function register_widgets( $widgets_manager ) {
-		// Future expansion: Add logic here to check `get_option()` if a widget is enabled/disabled via a settings page.
-		require_once plugin_dir_path( __DIR__ ) . 'widgets/class-dd-progress-slider.php';
-		$widgets_manager->register( new \DD_Progress_Slider_Widget() );
+		// Retrieve saved options from the database
+		$active_widgets = get_option( 'dd_addons_active_widgets', [] );
+
+		// Check if progress slider is enabled (defaults to true on first install)
+		$is_progress_slider_enabled = ! isset( $active_widgets['progress_slider'] ) || $active_widgets['progress_slider'] === 'yes';
+
+		if ( $is_progress_slider_enabled ) {
+			require_once plugin_dir_path( __DIR__ ) . 'widgets/class-dd-progress-slider.php';
+			$widgets_manager->register( new \DD_Progress_Slider_Widget() );
+		}
 	}
 
 	/**
