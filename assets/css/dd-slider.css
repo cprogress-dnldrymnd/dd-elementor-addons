@@ -269,3 +269,13 @@
         font-size: 14px;
     }
 }
+
+@media (max-width: 480px) {
+    .dd-slide-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .dd-slide-actions .dd-btn {
+        width: 100%;
+    }
+}
