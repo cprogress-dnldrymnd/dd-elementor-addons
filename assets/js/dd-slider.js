@@ -25,70 +25,66 @@ class DDProgressSlider {
 
     /**
      * Initializes the Swiper instance.
-     * Integrates loop capability and safely mitigates async dependencies for Elementor 3.x+.
      */
     initSwiper() {
         const SwiperClass = typeof Swiper !== 'undefined' ? Swiper : elementorFrontend.utils.swiper;
 
         const swiperConfig = {
-            slidesPerView: 1, // Fixed to 1 slide per view
+            slidesPerView: 1, 
             speed: this.options.speed,
             effect: 'fade', 
-            loop: true, // Crucial parameter to allow continuous progress bars and slideToLoop functionality
+            loop: true, 
             autoplay: {
                 delay: this.options.autoplay_delay,
                 disableOnInteraction: false,
             },
             on: {
-                // Synchronize the progress bar animation using Swiper's internal timer
-                autoplayTimeLeft: (s, time, progress) => this.handleProgress(s, progress),
-                slideChange: (s) => this.handleSlideChange(s)
+                // Trigger animation when the slide changes
+                slideChange: (s) => this.animateProgress(s.realIndex)
             }
         };
 
-        // Instantiation utilizing promise evaluation for robust compatibility 
+        // Handle Elementor 3.x+ async Swiper loading
         if ( typeof Swiper === 'undefined' && typeof elementorFrontend.utils.swiper !== 'undefined' ) {
             new SwiperClass(this.container, swiperConfig).then( ( instance ) => {
                 this.swiper = instance;
+                // Initialize the first progress bar immediately
+                this.animateProgress(this.swiper.realIndex);
             });
         } else {
             this.swiper = new SwiperClass(this.container, swiperConfig);
+            // Initialize the first progress bar immediately
+            this.animateProgress(this.swiper.realIndex);
         }
     }
 
     /**
-     * Updates the progress bar width for the active navigation item.
-     * @param {Object} swiperInstance Current Swiper instance.
-     * @param {number} progress Float representing remaining time (1 to 0).
+     * Animates the progress bar width using native CSS transitions for broad compatibility.
+     * @param {number} activeIndex The current active slide index.
      */
-    handleProgress(swiperInstance, progress) {
-        const activeIndex = swiperInstance.realIndex;
-        
+    animateProgress(activeIndex) {
         this.navItems.forEach((item, index) => {
             const fill = item.querySelector('.dd-nav-progress-fill');
-            if (index === activeIndex) {
-                // Invert progress calculation so it fills from 0% to 100%
-                const fillPercentage = (1 - progress) * 100;
-                fill.style.width = `${fillPercentage}%`;
-                item.classList.add('is-active');
-            } else {
-                fill.style.width = '0%';
-                item.classList.remove('is-active');
-            }
-        });
-    }
+            if (!fill) return;
 
-    /**
-     * Resets visual states when a slide change occurs manually or automatically.
-     * @param {Object} swiperInstance Current Swiper instance.
-     */
-    handleSlideChange(swiperInstance) {
-        const activeIndex = swiperInstance.realIndex;
-        this.navItems.forEach((item, index) => {
-            if (index !== activeIndex) {
-                const fill = item.querySelector('.dd-nav-progress-fill');
-                if (fill) fill.style.width = '0%';
+            if (index === activeIndex) {
+                item.classList.add('is-active');
+
+                // 1. Reset the bar instantly to 0% (no transition)
+                fill.style.transition = 'none';
+                fill.style.width = '0%';
+
+                // 2. Force a browser reflow so the DOM registers the reset before the animation begins
+                void fill.offsetWidth;
+
+                // 3. Apply the CSS transition matching the autoplay duration and fill to 100%
+                fill.style.transition = `width ${this.options.autoplay_delay}ms linear`;
+                fill.style.width = '100%';
+            } else {
+                // Reset inactive items
                 item.classList.remove('is-active');
+                fill.style.transition = 'none';
+                fill.style.width = '0%';
             }
         });
     }
