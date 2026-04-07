@@ -340,6 +340,7 @@ class DD_Progress_Slider_Widget extends \Elementor\Widget_Base {
 				'default'    => [ 'unit' => 'px', 'size' => 600 ],
 				'selectors'  => [
 					'{{WRAPPER}} .dd-swiper-container' => 'min-height: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .dd-custom-slide-content' => 'min-height: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
