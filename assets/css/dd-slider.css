@@ -75,7 +75,7 @@
     height: 56px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     cursor: pointer;
     border-radius: 100px;
     overflow: hidden;
@@ -85,6 +85,7 @@
     -webkit-backdrop-filter: blur(30px);
     mix-blend-mode: lighten;
     transition: background 0.3s ease;
+    padding: 15px 30px;
 }
 
 .dd-nav-item.is-active {
@@ -106,8 +107,8 @@
     position: relative;
     z-index: 2;
     color: #ffffff;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 400;
     pointer-events: none;
 }
 
