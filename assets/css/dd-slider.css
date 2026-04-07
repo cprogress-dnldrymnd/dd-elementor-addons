@@ -1,0 +1,73 @@
+.dd-progress-slider-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.dd-swiper-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Bottom Navigation Wrapper */
+.dd-slider-navigation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    z-index: 10;
+}
+
+/* Individual Navigation Item */
+.dd-nav-item {
+    position: relative;
+    flex: 1;
+    max-width: 250px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: background 0.3s ease;
+}
+
+.dd-nav-item.is-active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Progress Fill Bar */
+.dd-nav-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: rgba(255, 255, 255, 0.3); /* Subtle white overlay for the progress */
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Text Label */
+.dd-nav-label {
+    position: relative;
+    z-index: 2;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.dd-placeholder {
+    padding: 100px;
+    text-align: center;
+    background: #f1f1f1;
+    border: 2px dashed #ccc;
+}
