@@ -299,18 +299,20 @@
 
 /* * Grid wrap defining the 4 text quadrants.
  * Elevated z-index to 10 to guarantee text sits above the video container.
+ * align-content: center collapses the grid rows so they sit tightly together vertically.
  */
 .dd-hero-text-wrap {
     position: absolute;
     inset: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    align-content: center; /* Fixes the massive vertical gap */
     align-items: center;
     justify-items: center;
-    z-index: 10; /* Forces text layer above the video */
-    pointer-events: none; /* Allows click-through to the Swiper instance */
+    z-index: 10; 
+    pointer-events: none; 
     padding: 5%;
+    /* Note: row/column gap is dynamically injected by the Elementor Grid Gap control */
 }
 
 /* Base text styling and hardware-accelerated transition parameters */
@@ -347,8 +349,6 @@
     /* Width dynamically injected by Elementor Widget Settings */
     aspect-ratio: 9 / 16;
     opacity: 0;
-    
-    /* Clean scale entry for the video */
     transform: scale(0.95);
     transition: opacity 0.8s ease, transform 1s cubic-bezier(0.25, 1, 0.5, 1);
 }

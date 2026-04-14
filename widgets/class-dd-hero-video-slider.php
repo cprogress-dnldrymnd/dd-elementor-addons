@@ -248,7 +248,6 @@ class DD_Hero_Video_Slider_Widget extends \Elementor\Widget_Base
 
         $this->end_controls_section();
     }
-
     /**
      * Renders the widget output on the frontend.
      *
@@ -261,10 +260,10 @@ class DD_Hero_Video_Slider_Widget extends \Elementor\Widget_Base
 ?>
         <div class="dd-hero-video-container">
             <div class="dd-hero-text-wrap">
-                <span class="dd-hero-text dd-text-1"><?php echo esc_html($settings['text_1']); ?></span>
-                <span class="dd-hero-text dd-text-2"><?php echo esc_html($settings['text_2']); ?></span>
-                <span class="dd-hero-text dd-text-3"><?php echo esc_html($settings['text_3']); ?></span>
-                <span class="dd-hero-text dd-text-4"><?php echo esc_html($settings['text_4']); ?></span>
+                <span class="dd-hero-text dd-text-1"><?php echo wp_kses_post($settings['text_1']); ?></span>
+                <span class="dd-hero-text dd-text-2"><?php echo wp_kses_post($settings['text_2']); ?></span>
+                <span class="dd-hero-text dd-text-3"><?php echo wp_kses_post($settings['text_3']); ?></span>
+                <span class="dd-hero-text dd-text-4"><?php echo wp_kses_post($settings['text_4']); ?></span>
             </div>
 
             <div class="swiper-hero-vids">
