@@ -244,7 +244,7 @@ class DD_Hero_Video_Slider_Widget extends \Elementor\Widget_Base
                     // Applies width to the video
                     '{{WRAPPER}} .swiper-hero-vids' => 'width: {{SIZE}}{{UNIT}};',
                     // Synchronizes the exact width to the grid's column gap
-                    '{{WRAPPER}} .dd-hero-text-wrap' => 'column-gap: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .dd-hero-text-wrap' => 'column-gap: calc({{SIZE}}{{UNIT}} + 50px);',
                 ],
             ]
         );
