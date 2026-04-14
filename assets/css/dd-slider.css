@@ -22,6 +22,8 @@
     z-index: 0;
 }
 
+
+
 /* =========================================
    BACKGROUND VIDEO DOM MAPPING
    ========================================= */
@@ -280,6 +282,7 @@
     }
 }
 
+
 /* =========================================
    DD HERO VIDEO CARDS STYLES
    ========================================= */
@@ -294,7 +297,9 @@
     overflow: hidden;
 }
 
-/* Grid wrap defining the 4 text quadrants */
+/* * Grid wrap defining the 4 text quadrants.
+ * Elevated z-index to 10 to guarantee text sits above the video container.
+ */
 .dd-hero-text-wrap {
     position: absolute;
     inset: 0;
@@ -303,61 +308,55 @@
     grid-template-rows: 1fr 1fr;
     align-items: center;
     justify-items: center;
-    z-index: 1;
-    pointer-events: none; /* Let clicks pass through to the slider */
+    z-index: 10; /* Forces text layer above the video */
+    pointer-events: none; /* Allows click-through to the Swiper instance */
     padding: 5%;
 }
 
-/* Base text styling and transition parameters */
+/* Base text styling and hardware-accelerated transition parameters */
 .dd-hero-text {
     font-size: clamp(2rem, 6vw, 6rem);
     font-weight: 700;
     line-height: 1;
-    transition:
-        opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
-        transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
     opacity: 0;
 }
 
-/* Initial State: Clustered towards the absolute center */
-.dd-text-1 {
-    transform: translate(50%, 50%) scale(0.8);
+/* * Initial State: Strict Horizontal Split 
+ * Left column starts pushed right, Right column starts pushed left.
+ */
+.dd-text-1, .dd-text-3 { 
+    transform: translateX(50px); 
 }
-.dd-text-2 {
-    transform: translate(-50%, 50%) scale(0.8);
-}
-.dd-text-3 {
-    transform: translate(50%, -50%) scale(0.8);
-}
-.dd-text-4 {
-    transform: translate(-50%, -50%) scale(0.8);
+.dd-text-2, .dd-text-4 { 
+    transform: translateX(-50px); 
 }
 
-/* Animation Trigger: Text splits to grid positions */
+/* Animation Trigger: Text splits horizontally to natural grid coordinates */
 .animate-hero-text .dd-hero-text {
-    transform: translate(0, 0) scale(1);
+    transform: translateX(0);
     opacity: 1;
 }
 
-/* Elevation and containment for the Swiper Cards element */
+/* * Elevation and containment for the Swiper Cards element 
+ * z-index set to 5 to sit strictly underneath the text wrapper (z-index: 10)
+ */
 .swiper-hero-vids {
     position: relative;
-    z-index: 2;
-    /* Width is now dynamically injected by the Elementor Widget Settings */
+    z-index: 5;
+    /* Width dynamically injected by Elementor Widget Settings */
     aspect-ratio: 9 / 16;
     opacity: 0;
-
-    /* Video starts slightly smaller and moves up as the text splits */
-    transform: scale(0.85) translateY(40px);
-    transition:
-        opacity 0.8s ease,
-        transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    /* Clean scale entry for the video */
+    transform: scale(0.95);
+    transition: opacity 0.8s ease, transform 1s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Animation Trigger: Video enters the DOM space */
 .show-hero-video .swiper-hero-vids {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
 }
 
 .swiper-hero-vids-wrapper {
