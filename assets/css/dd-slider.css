@@ -313,7 +313,6 @@
 
 .dd-hero-text {
     font-size: clamp(2rem, 6vw, 6rem);
-    font-weight: 700;
     line-height: 1;
     text-transform: lowercase; /* Base style, can be overridden by Elementor Typography */
     opacity: 0;
