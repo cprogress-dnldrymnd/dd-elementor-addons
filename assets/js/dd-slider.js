@@ -109,9 +109,110 @@ class DDProgressSlider {
     }
 }
 
+/**
+ * DD Hero Video Slider Initialization
+ * Handles the Swiper Card effect instantiation and sequential video playback hooks.
+ */
+class DDHeroVideoSlider {
+
+    /**
+     * Constructor.
+     * @param {HTMLElement} wrapper The main widget container.
+     */
+    constructor(wrapper) {
+        this.wrapper = wrapper;
+        this.container = this.wrapper.querySelector('.swiper-hero-vids-wrapper');
+
+        if (!this.container) return;
+
+        this.initSwiper();
+        this.triggerInitialAnimations();
+    }
+
+    /**
+     * Instantiates Swiper and assigns video playback lifecycle hooks.
+     */
+    initSwiper() {
+        const SwiperClass = typeof Swiper !== 'undefined' ? Swiper : elementorFrontend.utils.swiper;
+
+        const swiperConfig = {
+            slidesPerView: 1,
+            loop: true,
+            autoplay: false,
+            effect: 'cards',
+            grabCursor: true,
+            cardsEffect: {
+                perSlideOffset: 10,
+                perSlideRotate: 1,
+                rotate: true,
+                slideShadows: false,
+            },
+            on: {
+                init: (swiper) => this.playActiveVideo(swiper),
+                slideChangeTransitionEnd: (swiper) => this.playActiveVideo(swiper)
+            }
+        };
+
+        // Check if Swiper 8+ is available (Required for cards effect)
+        if (typeof Swiper === 'undefined' && typeof elementorFrontend.utils.swiper !== 'undefined') {
+            new SwiperClass(this.container, swiperConfig).then((instance) => {
+                this.swiper = instance;
+            });
+        } else {
+            this.swiper = new SwiperClass(this.container, swiperConfig);
+        }
+    }
+
+    /**
+     * Resets inactive videos and enforces chronological playback on the active slide.
+     * @param {Object} swiper Instance of Swiper
+     */
+    playActiveVideo(swiper) {
+        const allVideos = this.wrapper.querySelectorAll('.swiper-hero-vids-wrapper video');
+        allVideos.forEach(vid => {
+            vid.pause();
+            vid.currentTime = 0;
+        });
+
+        const activeSlide = swiper.slides[swiper.activeIndex];
+        const activeVideo = activeSlide.querySelector('video');
+
+        if (activeVideo) {
+            activeVideo.play().catch(error => {
+                // Autoplay policy override safety net
+                console.warn("Video playback requires user interaction or strict mute settings.", error);
+            });
+
+            activeVideo.onended = null;
+
+            activeVideo.onended = () => {
+                swiper.slideNext();
+            };
+        }
+    }
+
+    /**
+     * Triggers the entry animations for text and DOM reveals mapping to the original logic.
+     */
+    triggerInitialAnimations() {
+        setTimeout(() => {
+            document.body.classList.add('animate-hero-text');
+        }, 1000);
+        setTimeout(() => {
+            document.body.classList.add('show-hero-video');
+        }, 1500);
+    }
+}
+
+
 // Initialize on Elementor frontend loaded hook
 window.addEventListener('elementor/frontend/init', () => {
     elementorFrontend.hooks.addAction('frontend/element_ready/dd_progress_slider.default', function ($scope) {
         new DDProgressSlider($scope[0]);
     });
+
+    elementorFrontend.hooks.addAction('frontend/element_ready/dd_hero_video_slider.default', function ($scope) {
+        new DDHeroVideoSlider($scope[0]);
+    });
 });
+
