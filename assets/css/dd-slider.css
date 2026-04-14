@@ -22,8 +22,6 @@
     z-index: 0;
 }
 
-
-
 /* =========================================
    BACKGROUND VIDEO DOM MAPPING
    ========================================= */
@@ -282,7 +280,6 @@
     }
 }
 
-
 /* =========================================
    DD HERO VIDEO CARDS STYLES
    ========================================= */
@@ -293,7 +290,6 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    overflow: hidden;
 }
 
 /* * Grid wrap defining the 4 text quadrants.
@@ -308,8 +304,8 @@
     align-content: center; /* Fixes the massive vertical gap */
     align-items: center;
     justify-items: center;
-    z-index: 10; 
-    pointer-events: none; 
+    z-index: 10;
+    pointer-events: none;
 }
 
 /* Base text styling and hardware-accelerated transition parameters */
@@ -317,22 +313,27 @@
     font-size: clamp(2rem, 6vw, 6rem);
     font-weight: 700;
     line-height: 1;
-    transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    transition:
+        opacity 1s cubic-bezier(0.25, 1, 0.5, 1),
+        transform 1s cubic-bezier(0.25, 1, 0.5, 1);
     opacity: 0;
     width: 100%;
 }
-.dd-text-1, .dd-text-3 {
+.dd-text-1,
+.dd-text-3 {
     text-align: right;
 }
 
 /* * Initial State: Strict Horizontal Split 
  * Left column starts pushed right, Right column starts pushed left.
  */
-.dd-text-1, .dd-text-3 { 
-    transform: translateX(50px); 
+.dd-text-1,
+.dd-text-3 {
+    transform: translateX(50px);
 }
-.dd-text-2, .dd-text-4 { 
-    transform: translateX(-50px); 
+.dd-text-2,
+.dd-text-4 {
+    transform: translateX(-50px);
 }
 
 /* Animation Trigger: Text splits horizontally to natural grid coordinates */
@@ -351,7 +352,9 @@
     aspect-ratio: 9 / 16;
     opacity: 0;
     transform: scale(0.95);
-    transition: opacity 0.8s ease, transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    transition:
+        opacity 0.8s ease,
+        transform 1s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Animation Trigger: Video enters the DOM space */
@@ -380,4 +383,14 @@
     height: 100%;
     object-fit: cover;
     pointer-events: none;
+}
+@media (max-width: 767px) {
+    .dd-hero-text-wrap {
+        column-gap: 30px !important;
+        bottom: 0;
+        top: auto;
+    }
+    .dd-hero-video-container {
+        padding-bottom: 100px;
+    }
 }
