@@ -47,23 +47,28 @@ class DD_Widget_Manager
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor widgets manager instance.
 	 * @return void
 	 */
-	public function register_widgets($widgets_manager)
-	{
-		// Retrieve saved options from the database
-		$active_widgets = get_option('dd_addons_active_widgets', []);
+	public function register_widgets( $widgets_manager ) {
+		// Retrieve saved options from the database, defaulting to false if never saved
+		$active_widgets = get_option( 'dd_addons_active_widgets', false );
 
-		// Check if widgets are enabled (defaults to true on first install)
-		$is_progress_slider_enabled = ! isset($active_widgets['progress_slider']) || $active_widgets['progress_slider'] === 'yes';
-		$is_hero_video_slider_enabled = ! isset($active_widgets['hero_video_slider']) || $active_widgets['hero_video_slider'] === 'yes';
-
-		if ($is_progress_slider_enabled) {
-			require_once plugin_dir_path(__DIR__) . 'widgets/class-dd-progress-slider.php';
-			$widgets_manager->register(new \DD_Progress_Slider_Widget());
+		if ( false === $active_widgets ) {
+			// Default state on first install: all enabled
+			$is_progress_slider_enabled   = true;
+			$is_hero_video_slider_enabled = true;
+		} else {
+			// Strict check: only enabled if the array key exists and equals 'yes'
+			$is_progress_slider_enabled   = isset( $active_widgets['progress_slider'] ) && $active_widgets['progress_slider'] === 'yes';
+			$is_hero_video_slider_enabled = isset( $active_widgets['hero_video_slider'] ) && $active_widgets['hero_video_slider'] === 'yes';
 		}
 
-		if ($is_hero_video_slider_enabled) {
-			require_once plugin_dir_path(__DIR__) . 'widgets/class-dd-hero-video-slider.php';
-			$widgets_manager->register(new \DD_Hero_Video_Slider_Widget());
+		if ( $is_progress_slider_enabled ) {
+			require_once plugin_dir_path( __DIR__ ) . 'widgets/class-dd-progress-slider.php';
+			$widgets_manager->register( new \DD_Progress_Slider_Widget() );
+		}
+
+		if ( $is_hero_video_slider_enabled ) {
+			require_once plugin_dir_path( __DIR__ ) . 'widgets/class-dd-hero-video-slider.php';
+			$widgets_manager->register( new \DD_Hero_Video_Slider_Widget() );
 		}
 	}
 

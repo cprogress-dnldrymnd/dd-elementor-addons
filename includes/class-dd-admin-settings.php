@@ -113,18 +113,23 @@ class DD_Admin_Settings
 	 * @param array $args Arguments passed from add_settings_field, containing the field 'id'.
 	 * @return void
 	 */
-	public function render_checkbox_field($args)
-	{
-		$options = get_option('dd_addons_active_widgets', []);
+	public function render_checkbox_field( $args ) {
+		// Return false by default so we know if the option has never been saved
+		$options = get_option( 'dd_addons_active_widgets', false );
 		$id      = $args['id'];
-
-		// Default to enabled if the option hasn't been saved yet
-		$checked = ! isset($options[$id]) || $options[$id] === 'yes' ? 'checked' : '';
+		
+		if ( false === $options ) {
+			// Plugin just installed/never saved, default to checked
+			$checked = 'checked';
+		} else {
+			// Settings have been saved before, only check if explicitly set to 'yes'
+			$checked = ( isset( $options[ $id ] ) && $options[ $id ] === 'yes' ) ? 'checked' : '';
+		}
 
 		printf(
 			'<input type="checkbox" name="dd_addons_active_widgets[%1$s]" value="yes" %2$s />',
-			esc_attr($id),
-			esc_attr($checked)
+			esc_attr( $id ),
+			esc_attr( $checked )
 		);
 	}
 
