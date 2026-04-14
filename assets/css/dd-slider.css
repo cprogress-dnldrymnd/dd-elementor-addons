@@ -394,3 +394,9 @@
         padding-bottom: 100px;
     }
 }
+
+@media (max-width: 480px) {
+    .swiper-hero-vids {
+        width: 100% !important;
+    }
+}
