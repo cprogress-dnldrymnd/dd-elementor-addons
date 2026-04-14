@@ -397,6 +397,6 @@
 
 @media (max-width: 480px) {
     .swiper-hero-vids {
-        width: 100% !important;
+        width: 80% !important;
     }
 }
