@@ -209,47 +209,47 @@ class DD_Hero_Video_Slider_Widget extends \Elementor\Widget_Base
                     '{{WRAPPER}} .dd-hero-text-wrap' => 'row-gap: {{SIZE}}{{UNIT}};',
                 ],
             ]
-        )
+        );
 
 
         $this->end_controls_section();
 
-       // ==============================
-		// TAB: STYLE -> VIDEO CONTAINER
-		// ==============================
-		$this->start_controls_section(
-			'section_style_video',
-			[
-				'label' => esc_html__( 'Video Container', 'dd-addons' ),
-				'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
-			]
-		);
+        // ==============================
+        // TAB: STYLE -> VIDEO CONTAINER
+        // ==============================
+        $this->start_controls_section(
+            'section_style_video',
+            [
+                'label' => esc_html__('Video Container', 'dd-addons'),
+                'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
 
-		$this->add_responsive_control(
-			'video_width',
-			[
-				'label'      => esc_html__( 'Video Width & Text Split Gap', 'dd-addons' ),
-				'type'       => \Elementor\Controls_Manager::SLIDER,
-				'size_units' => [ 'px', '%', 'vw' ],
-				'range'      => [
-					'px' => [ 'min' => 200, 'max' => 1200 ],
-					'vw' => [ 'min' => 10,  'max' => 100 ],
-					'%'  => [ 'min' => 10,  'max' => 100 ],
-				],
-				'default'    => [
-					'unit' => 'vw',
-					'size' => 30,
-				],
-				'selectors'  => [
-					// Applies width to the video
-					'{{WRAPPER}} .swiper-hero-vids' => 'width: {{SIZE}}{{UNIT}};',
-					// Synchronizes the exact width to the grid's column gap
-					'{{WRAPPER}} .dd-hero-text-wrap' => 'column-gap: {{SIZE}}{{UNIT}};',
-				],
-			]
-		);
+        $this->add_responsive_control(
+            'video_width',
+            [
+                'label'      => esc_html__('Video Width & Text Split Gap', 'dd-addons'),
+                'type'       => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', '%', 'vw'],
+                'range'      => [
+                    'px' => ['min' => 200, 'max' => 1200],
+                    'vw' => ['min' => 10,  'max' => 100],
+                    '%'  => ['min' => 10,  'max' => 100],
+                ],
+                'default'    => [
+                    'unit' => 'vw',
+                    'size' => 30,
+                ],
+                'selectors'  => [
+                    // Applies width to the video
+                    '{{WRAPPER}} .swiper-hero-vids' => 'width: {{SIZE}}{{UNIT}};',
+                    // Synchronizes the exact width to the grid's column gap
+                    '{{WRAPPER}} .dd-hero-text-wrap' => 'column-gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
 
-		$this->end_controls_section();
+        $this->end_controls_section();
     }
     /**
      * Renders the widget output on the frontend.
