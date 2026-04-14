@@ -292,7 +292,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
     width: 100%;
     overflow: hidden;
 }
@@ -311,8 +310,6 @@
     justify-items: center;
     z-index: 10; 
     pointer-events: none; 
-    padding: 5%;
-    /* Note: row/column gap is dynamically injected by the Elementor Grid Gap control */
 }
 
 /* Base text styling and hardware-accelerated transition parameters */
