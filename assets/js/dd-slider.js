@@ -42,10 +42,14 @@ class DDProgressSlider {
             autoplay: {
                 delay: this.options.autoplay_delay,
                 disableOnInteraction: false,
+                // Delay starts after the fade finishes so Autoplay Delay = dwell time
+                waitForTransition: true,
             },
             on: {
-                // Trigger animation when the slide changes
-                slideChange: (s) => this.animateProgress(s.realIndex)
+                // Clear bars as soon as a transition starts
+                slideChange: () => this.resetProgress(),
+                // Fill the active bar only during the autoplay dwell window
+                slideChangeTransitionEnd: (s) => this.animateProgress(s.realIndex),
             }
         };
 
@@ -64,7 +68,23 @@ class DDProgressSlider {
     }
 
     /**
+     * Instantly clears all progress fills (no transition).
+     * Used when a slide transition starts so bars do not sit full during the fade.
+     */
+    resetProgress() {
+        this.navItems.forEach((item) => {
+            const fill = item.querySelector('.dd-nav-progress-fill');
+            if (!fill) return;
+
+            item.classList.remove('is-active');
+            fill.style.transition = 'none';
+            fill.style.width = '0%';
+        });
+    }
+
+    /**
      * Animates the progress bar width using native CSS transitions for broad compatibility.
+     * Runs after the fade ends so duration matches autoplay delay (dwell time).
      * @param {number} activeIndex The current active slide index.
      */
     animateProgress(activeIndex) {

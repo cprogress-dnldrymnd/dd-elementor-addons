@@ -83,7 +83,7 @@ class DD_Widget_Manager
 			'dd-slider-style',
 			plugins_url('assets/css/dd-slider.css', __DIR__),
 			[],
-			'1.0.0'
+			'1.0.1'
 		);
 	}
 
