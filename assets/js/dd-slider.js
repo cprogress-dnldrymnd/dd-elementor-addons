@@ -51,10 +51,8 @@ class DDProgressSlider {
                 waitForTransition: true,
             },
             on: {
-                // Clear bars as soon as a transition starts
-                slideChange: () => this.resetProgress(),
-                // Fill the active bar only during the autoplay dwell window
-                slideChangeTransitionEnd: (s) => this.animateProgress(s.realIndex),
+                // Start the new nav progress immediately (including on click) — do not wait for fade end
+                slideChange: (s) => this.animateProgress(s.realIndex),
             }
         };
 
@@ -62,37 +60,28 @@ class DDProgressSlider {
         if (typeof Swiper === 'undefined' && typeof elementorFrontend.utils.swiper !== 'undefined') {
             new SwiperClass(this.container, swiperConfig).then((instance) => {
                 this.swiper = instance;
-                // Initialize the first progress bar immediately
-                this.animateProgress(this.swiper.realIndex);
+                // First slide has no preceding fade — progress = dwell only
+                this.animateProgress(this.swiper.realIndex, false);
             });
         } else {
             this.swiper = new SwiperClass(this.container, swiperConfig);
-            // Initialize the first progress bar immediately
-            this.animateProgress(this.swiper.realIndex);
+            // First slide has no preceding fade — progress = dwell only
+            this.animateProgress(this.swiper.realIndex, false);
         }
     }
 
     /**
-     * Instantly clears all progress fills (no transition).
-     * Used when a slide transition starts so bars do not sit full during the fade.
-     */
-    resetProgress() {
-        this.navItems.forEach((item) => {
-            const fill = item.querySelector('.dd-nav-progress-fill');
-            if (!fill) return;
-
-            item.classList.remove('is-active');
-            fill.style.transition = 'none';
-            fill.style.width = '0%';
-        });
-    }
-
-    /**
      * Animates the progress bar width using native CSS transitions for broad compatibility.
-     * Runs after the fade ends so duration matches autoplay delay (dwell time).
+     * Starts on slideChange so nav clicks and autoplay feel immediate (no post-fade gap).
      * @param {number} activeIndex The current active slide index.
+     * @param {boolean} includeTransition When true (default), duration is fade + dwell to match
+     *   waitForTransition autoplay. On first init, pass false (dwell only).
      */
-    animateProgress(activeIndex) {
+    animateProgress(activeIndex, includeTransition = true) {
+        const progressMs = includeTransition
+            ? this.options.autoplay_delay + this.options.speed
+            : this.options.autoplay_delay;
+
         this.navItems.forEach((item, index) => {
             const fill = item.querySelector('.dd-nav-progress-fill');
             if (!fill) return;
@@ -107,8 +96,8 @@ class DDProgressSlider {
                 // 2. Force a browser reflow so the DOM registers the reset before the animation begins
                 void fill.offsetWidth;
 
-                // 3. Apply the CSS transition matching the autoplay duration and fill to 100%
-                fill.style.transition = `width ${this.options.autoplay_delay}ms linear`;
+                // 3. Fill until the next slide advances
+                fill.style.transition = `width ${progressMs}ms linear`;
                 fill.style.width = '100%';
             } else {
                 // Reset inactive items
