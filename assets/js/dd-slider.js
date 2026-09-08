@@ -8,16 +8,21 @@ class DDProgressSlider {
      * Constructor.
      * @param {HTMLElement} wrapper The main widget container.
      */
-    constructor(wrapper) {
-        this.wrapper = wrapper;
+    constructor(scope) {
+        // Elementor passes the widget root ($scope); options live on the inner wrapper.
+        this.wrapper = scope.querySelector('.dd-progress-slider-wrapper') || scope;
         this.container = this.wrapper.querySelector('.dd-swiper-container');
         this.navItems = this.wrapper.querySelectorAll('.dd-nav-item');
 
         if (!this.container || this.navItems.length === 0) return;
 
-        // Parse options passed from PHP
+        // Parse options passed from PHP (data-dd-options on .dd-progress-slider-wrapper)
         const rawOptions = this.wrapper.getAttribute('data-dd-options');
         this.options = rawOptions ? JSON.parse(rawOptions) : { autoplay_delay: 5000, speed: 500 };
+
+        // Coerce to numbers in case attributes arrive as strings
+        this.options.autoplay_delay = Number(this.options.autoplay_delay) || 5000;
+        this.options.speed = Number(this.options.speed) || 500;
 
         this.initSwiper();
         this.bindEvents();

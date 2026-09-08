@@ -83,7 +83,7 @@ class DD_Widget_Manager
 			'dd-slider-style',
 			plugins_url('assets/css/dd-slider.css', __DIR__),
 			[],
-			'1.0.1'
+			'1.0.2'
 		);
 	}
 
@@ -98,7 +98,7 @@ class DD_Widget_Manager
 			'dd-slider-script',
 			plugins_url('assets/js/dd-slider.js', __DIR__),
 			['jquery', 'swiper'], // Ensure Swiper is loaded beforehand
-			'1.0.1',
+			'1.0.2',
 			true
 		);
 	}
