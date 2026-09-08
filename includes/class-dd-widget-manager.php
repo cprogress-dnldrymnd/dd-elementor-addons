@@ -98,7 +98,7 @@ class DD_Widget_Manager
 			'dd-slider-script',
 			plugins_url('assets/js/dd-slider.js', __DIR__),
 			['jquery', 'swiper'], // Ensure Swiper is loaded beforehand
-			'1.0.0',
+			'1.0.1',
 			true
 		);
 	}
