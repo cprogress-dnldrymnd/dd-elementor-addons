@@ -6,7 +6,7 @@ class DDProgressSlider {
 
     /**
      * Constructor.
-     * @param {HTMLElement} wrapper The main widget container.
+     * @param {HTMLElement} scope Elementor widget root ($scope[0]).
      */
     constructor(scope) {
         // Elementor passes the widget root ($scope); options live on the inner wrapper.
